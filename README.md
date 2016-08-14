@@ -22,6 +22,8 @@ Lita.configure do |config|
 end
 ```
 
+Make sure that the Lita bot is a member of this room.
+
 ## Usage
 
 In Docker Hub go to the repository that you want to connect with Lita. You should have admin access to the Docker Hub configuration, and it should be an autobuild repository (builds triggered by Github or Bitbucket commits). Open the *Webhooks* tab of the repository and add the following URL:

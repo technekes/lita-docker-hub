@@ -12,24 +12,23 @@ module Lita
         repo_name = body.fetch("repository", {}).fetch("repo_name", nil)
         repo_url = body.fetch("repository", {}).fetch("repo_url", nil)
         tag = body.fetch("push_data", {}).fetch("tag", nil)
+        pusher = body.fetch("push_data", {}).fetch("pusher", nil)
         pushed_at = body.fetch("push_data", {}).fetch("pushed_at", nil)
 
-        if repo_name.present? && repo_url.present? && tag.present? && pushed_at.present?
+        if repo_name.present? && repo_url.present? && tag.present? && pusher.present? && pushed_at.present?
           build_time = time_interval(Time.at(pushed_at), Time.now)
 
           target = find_room_by_name(config.room)
           message = render_template("build", repo_name: repo_name,
                                              tag: tag,
+                                             pusher: pusher,
                                              build_time: build_time)
-
-          Lita.logger.debug target.id
 
           case robot.config.robot.adapter
           when :slack
             attachment = ::Lita::Adapters::Slack::Attachment.new(message,
               title: "Docker Hub",
               title_link: repo_url,
-              thumb_url: "https://docs.docker.com/v1.6/img/nav/docker-logo-loggedin.png",
               color: "#36a64f")
             robot.chat_service.send_attachment(target, [attachment])
           else
