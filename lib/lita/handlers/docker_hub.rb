@@ -6,27 +6,35 @@ module Lita
       http.post "/docker-hub/receive", :receive
 
       def receive(request, response)
-        target = Source.new(room: find_room_id_by_name(config.room))
-        body = parse(request.body.read)
+        response.headers["Content-Type"] = "application/json"
 
+        body = parse(request.body.read)
         repo_name = body.fetch("repository", {}).fetch("repo_name", nil)
         repo_url = body.fetch("repository", {}).fetch("repo_url", nil)
-        tag = body.fetch("push_data", {}).fetch("tag", nil) || "nil"
+        tag = body.fetch("push_data", {}).fetch("tag", nil)
+        pushed_at = body.fetch("push_data", {}).fetch("pushed_at", nil)
 
-        pushed_at = body.fetch("push_data", {}).fetch("pushed_at", Time.now)
-        build_time = time_interval(Time.at(pushed_at), Time.now)
+        if repo_name.present? && repo_url.present? && tag.present? && pushed_at.present?
+          build_time = time_interval(Time.at(pushed_at), Time.now)
 
-        message = "Docker Hub build of #{repo_name}@#{tag} passed in #{build_time}"
+          target = Lita::Source.new(room: '#general') #Source.new(room: find_room_id_by_name(config.room))
+          message = render_template("build", repo_name: repo_name,
+                                             repo_url: repo_url,
+                                             tag: tag,
+                                             build_time: build_time)
+          Lita.logger.debug target.id + " " + target.name
+          Lita.logger.debug message
 
-        Lita.logger.debug target
-        Lita.logger.debug message
+          robot.send_message(target, message)
 
-        robot.send_message(target, message)
-
-        response.headers["Content-Type"] = "application/json"
-        response.write("ok")
+          response.write("ok")
+        else
+          response.write("error")
+        end
       rescue => error
         Lita.logger.error error.message
+
+        response.write("error")
       end
 
       Lita.register_handler(self)
@@ -40,7 +48,7 @@ module Lita
       def time_interval(start_time, end_time)
         interval = (end_time - start_time).round
         min, sec = interval.divmod(60)
-        " in #{min} min and #{sec} sec"
+        "#{min} min and #{sec} sec"
       end
 
       def find_room_id_by_name(room_name)
