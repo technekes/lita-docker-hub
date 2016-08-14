@@ -17,20 +17,20 @@ module Lita
         if repo_name.present? && repo_url.present? && tag.present? && pushed_at.present?
           build_time = time_interval(Time.at(pushed_at), Time.now)
 
-          target = Lita::Source.new(room: '#general') #Source.new(room: find_room_id_by_name(config.room))
+          target = Lita::Source.new(room: find_room_id_by_name(config.room))
           message = render_template("build", repo_name: repo_name,
                                              repo_url: repo_url,
                                              tag: tag,
                                              build_time: build_time)
-          Lita.logger.debug target.room
+          Lita.logger.debug target.room_object.id
           Lita.logger.debug message
 
           case robot.config.robot.adapter
           when :slack
-            attachment = Lita::Adapters::Slack::Attachment.new(message,
+            attachment = ::Lita::Adapters::Slack::Attachment.new(message,
               title: "Docker Hub",
               title_link: repo_url,
-              thumb_url: "https://addons.cdn.mozilla.net/user-media/addon_icons/657/657778-64.png",
+              thumb_url: "https://docs.docker.com/v1.6/img/nav/docker-logo-loggedin.png",
               color: "#36a64f")
             robot.chat_service.send_attachment(target, [attachment])
           else
@@ -67,7 +67,8 @@ module Lita
           if room = ::Lita::Room.find_by_name(room_name)
             return room.id
           else
-            ::Lita::Room.find_by_name("general").id
+            room = ::Lita::Room.find_by_name("general")
+            return room.id
           end
         else
           room_name
