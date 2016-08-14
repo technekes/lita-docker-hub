@@ -19,11 +19,8 @@ module Lita
 
           target = Lita::Source.new(room: find_room_id_by_name(config.room))
           message = render_template("build", repo_name: repo_name,
-                                             repo_url: repo_url,
                                              tag: tag,
                                              build_time: build_time)
-          Lita.logger.debug target.room_object.id
-          Lita.logger.debug message
 
           case robot.config.robot.adapter
           when :slack
@@ -43,6 +40,7 @@ module Lita
         end
       rescue => error
         Lita.logger.error error.message
+        Lita.logger.debug error.backtrace.join("\n")
 
         response.write("error")
       end
