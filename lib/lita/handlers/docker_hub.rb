@@ -25,7 +25,17 @@ module Lita
           Lita.logger.debug target.room
           Lita.logger.debug message
 
-          robot.send_message(target, message)
+          case robot.config.robot.adapter
+          when :slack
+            attachment = Lita::Adapters::Slack::Attachment.new(message,
+              title: "Docker Hub",
+              title_link: repo_url,
+              thumb_url: "https://addons.cdn.mozilla.net/user-media/addon_icons/657/657778-64.png",
+              color: "#36a64f")
+            robot.chat_service.send_attachment(target, [attachment])
+          else
+            robot.send_message(target, message)
+          end
 
           response.write("ok")
         else
