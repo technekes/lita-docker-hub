@@ -17,7 +17,7 @@ module Lita
         if repo_name.present? && repo_url.present? && tag.present? && pushed_at.present?
           build_time = time_interval(Time.at(pushed_at), Time.now)
 
-          target = ::Lita::Room.find_by_name(config.room)
+          target = find_room_by_name(config.room)
           message = render_template("build", repo_name: repo_name,
                                              tag: tag,
                                              build_time: build_time)
@@ -61,19 +61,19 @@ module Lita
         "#{min} min and #{sec} sec"
       end
 
-      # def find_room_id_by_name(room_name)
-      #   case robot.config.robot.adapter.to_s.to_sym
-      #   when :slack
-      #     if room = ::Lita::Room.find_by_name(room_name)
-      #       return room.id
-      #     else
-      #       room = ::Lita::Room.find_by_name("general")
-      #       return room.id
-      #     end
-      #   else
-      #     room_name
-      #   end
-      # end
+      def find_room_by_name(room_name)
+        case robot.config.robot.adapter.to_s.to_sym
+        when :slack
+          if room = ::Lita::Room.find_by_name(room_name)
+            return room
+          else
+            room = ::Lita::Room.find_by_name("general")
+            return room
+          end
+        else
+          room_name
+        end
+      end
     end
   end
 end
