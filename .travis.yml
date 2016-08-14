@@ -1,0 +1,16 @@
+language: ruby
+rvm:
+- 2.3.1
+install:
+- travis_retry bundle install
+script: bundle exec rspec
+deploy:
+  provider: rubygems
+  api_key:
+    secure: Pa29E+nF2RCkiu0JAGJWHTeD3aDRkq8j2Ip3E293WM4vzkOSynoHuMjoXO3WDLSTWhGxV/NkuCGdlj06DXZ7CgJ2EAoheHEpmlY7aGfaI+ykIABNvB3O7f6xA7GtqHcwlyQECSlA8TK+ZLlnviWQROKlOe59kAdCHrdxx7FENpSRWmzyMTCCGxbPeetaHt0g50lXbx9FMoyM2Nv4JEY+uozrunawSR0LyTZ/IK6zhfy1mavA77r+yUn+/wErQ7hRtA81deoHZUsxWFqjRMLg3G+xl09ZEttusJqdzat+Ewu2t6fZCBmmBOVXPO60zJGAzUKiRevkghumr5clTBRa4Ur9xFUgi934ZdkwqBKQGjhPltJDEbS0cYtsqD3dfz7jAtrx+tluqgR7oCvge94ApM/vjPtE/IsXqlsTIY3j4RtslbM5eaGXVw6wm84Ksb36Ei/Y0W74H1p5cHSmlrBdakeHGYwFiQvQqcJ4LCUi2cLA1Sw/nYq6C6nmu79gsKxv5eq5iJWGgWXUIAwRTI3pJOBshf0lWQPU1KMxIhyDL6mgz/WmDPMZBh/msED8Kks/1UkmmVBfG5o13g+/eOV7yQ0DDoJASj+Myc6bblGMTQwhusIR8F/wkKNhOBjj8SpqDzk8XRoHqbGo1dVRWxCF/6UlKu5c5+vRZWUP4AXQxgc=
+  gem: lita-docker-hub
+  on:
+    tags: true
+    repo: datacite/lita-docker-hub
+notifications:
+  slack: datacite:Wt8En0ALoTA6Kjc5EOKNDWxN
