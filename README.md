@@ -14,11 +14,23 @@ gem "lita-docker-hub"
 ```
 ## Configuration
 
-TODO: Describe any configuration attributes the plugin exposes.
+You can configure the room where `lita-docker-hub` sends messages. The default is `general`.
+
+```
+Lita.configure do |config|
+  config.handlers.docker_hub.room = "ops"
+end
+```
 
 ## Usage
 
-TODO: Describe the plugin's features and how to use them.
+In Docker Hub go to the repository that you want to connect with Lita. You should have admin access to the Docker Hub configuration, and it should be an autobuild repository (builds triggered by Github or Bitbucket commits). Open the *Webhooks* tab of the repository and add the following URL:
+
+```
+http://MY_LITA_SERVER/docker-hub/receive
+```
+
+Where `MY_LITA_SERVER` is the name or IP address of your Lita server. Make sure the Lita server is accessible for web requests.
 
 ## License
 

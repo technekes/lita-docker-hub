@@ -1,3 +1,5 @@
+require "time_difference"
+
 module Lita
   module Handlers
     class DockerHub < Handler
@@ -27,7 +29,7 @@ module Lita
         response.headers["Content-Type"] = "application/json"
         response.write("ok")
       rescue => error
-        log_error(robot, error, message: message)
+        Lita.logger.error error.message
       end
 
       Lita.register_handler(self)
