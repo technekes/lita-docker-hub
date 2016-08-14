@@ -1,6 +1,7 @@
 # lita-docker-hub
 
 [![Build Status](https://travis-ci.org/datacite/lita-docker-hub.svg?branch=master)](https://travis-ci.org/datacite/lita-docker-hub)
+[![Gem Version](https://badge.fury.io/rb/lita-docker-hub.svg)](https://badge.fury.io/rb/lita-docker-hub)
 
 A [Docker Hub](https://hub.docker.com/) plugin for [Lita](https://www.lita.io/).
 
