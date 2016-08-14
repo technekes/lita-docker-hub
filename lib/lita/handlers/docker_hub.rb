@@ -7,8 +7,22 @@ module Lita
 
       def receive(request, response)
         target = Source.new(room: find_room_id_by_name(config.room))
-        message = parse(request.body.read)
+        body = parse(request.body.read)
+        pushed_at = body.fetch("push_data", {}).fetch("pushed_at", nil)
+        pushed_at = Time.at(pushed_at) unless pushed_at.nil?
+        tag = body.fetch("push_data", {}).fetch("tag", nil)
 
+        description = body.fetch("repository", {}).fetch("description", nil)
+        repo_name = body.fetch("repository", {}).fetch("repo_name", nil)
+        repo_url = body.fetch("repository", {}).fetch("repo_url", nil)
+
+        message = "Repository "
+        message += "#{repo_name} " unless repo_name.nil?
+        message += "at #{repo_url} " unless repo_url.nil?
+        message += "built at Docker Hub"
+        message += " with tag #{tag}" unless tag.nil?
+
+        Lita.logger.debug target
         Lita.logger.debug message
 
         robot.send_messages(target, message)
