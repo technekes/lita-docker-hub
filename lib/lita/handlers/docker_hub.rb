@@ -8,24 +8,21 @@ module Lita
       def receive(request, response)
         target = Source.new(room: find_room_id_by_name(config.room))
         body = parse(request.body.read)
-        pushed_at = body.fetch("push_data", {}).fetch("pushed_at", nil)
-        pushed_at = Time.at(pushed_at) unless pushed_at.nil?
-        tag = body.fetch("push_data", {}).fetch("tag", nil)
 
-        description = body.fetch("repository", {}).fetch("description", nil)
         repo_name = body.fetch("repository", {}).fetch("repo_name", nil)
         repo_url = body.fetch("repository", {}).fetch("repo_url", nil)
+        tag = body.fetch("push_data", {}).fetch("tag", nil) || "nil"
 
-        message = "Repository "
-        message += "#{repo_name} " unless repo_name.nil?
-        message += "at #{repo_url} " unless repo_url.nil?
-        message += "built at Docker Hub"
-        message += " with tag #{tag}" unless tag.nil?
+        pushed_at = body.fetch("push_data", {}).fetch("pushed_at", Time.now)
+        started_at = Time.at(pushed_at)
+        build_time = TimeDifference.between(started_at, Time.now).humanize
+
+        message = "Docker Hub build of #{repo_name}@#{tag} passed in #{build_time}"
 
         Lita.logger.debug target
         Lita.logger.debug message
 
-        robot.send_messages(target, message)
+        robot.send_message(target, message)
 
         response.headers["Content-Type"] = "application/json"
         response.write("ok")
