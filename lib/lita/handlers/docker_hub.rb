@@ -22,7 +22,7 @@ module Lita
                                              repo_url: repo_url,
                                              tag: tag,
                                              build_time: build_time)
-          Lita.logger.debug target.id + " " + target.name
+          Lita.logger.debug target.room
           Lita.logger.debug message
 
           robot.send_message(target, message)
