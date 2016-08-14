@@ -6,7 +6,7 @@ Lita.load_locales Dir[File.expand_path(
 
 require "lita/handlers/docker_hub"
 
-Lita::Handlers::DockerHUb.template_root File.expand_path(
+Lita::Handlers::DockerHub.template_root File.expand_path(
   File.join("..", "..", "templates"),
  __FILE__
 )

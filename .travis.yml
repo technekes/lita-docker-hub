@@ -13,4 +13,5 @@ deploy:
     tags: true
     repo: datacite/lita-docker-hub
 notifications:
+  email: false
   slack: datacite:Wt8En0ALoTA6Kjc5EOKNDWxN
