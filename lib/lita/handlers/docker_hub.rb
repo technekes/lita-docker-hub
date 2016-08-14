@@ -7,11 +7,16 @@ module Lita
 
       def receive(request, response)
         target = Source.new(room: find_room_id_by_name(config.room))
-        message = parse(request.body.string)
+        message = parse(request.body.read)
+
+        Lita.logger.debug message
+
         robot.send_messages(target, message)
 
         response.headers["Content-Type"] = "application/json"
         response.write("ok")
+      rescue => error
+        log_error(robot, error, message: message)
       end
 
       Lita.register_handler(self)
