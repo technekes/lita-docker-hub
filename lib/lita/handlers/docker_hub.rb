@@ -1,5 +1,3 @@
-require "time_difference"
-
 module Lita
   module Handlers
     class DockerHub < Handler
@@ -16,8 +14,7 @@ module Lita
         tag = body.fetch("push_data", {}).fetch("tag", nil) || "nil"
 
         pushed_at = body.fetch("push_data", {}).fetch("pushed_at", Time.now)
-        started_at = Time.at(pushed_at)
-        build_time = TimeDifference.between(started_at, Time.now).humanize
+        build_time = time_interval(Time.at(pushed_at), Time.now)
 
         message = "Docker Hub build of #{repo_name}@#{tag} passed in #{build_time}"
 
@@ -38,6 +35,12 @@ module Lita
 
       def parse(obj)
         MultiJson.load(obj)
+      end
+
+      def time_interval(start_time, end_time)
+        interval = (end_time - start_time).round
+        min, sec = interval.divmod(60)
+        " in #{min} min and #{sec} sec"
       end
 
       def find_room_id_by_name(room_name)
