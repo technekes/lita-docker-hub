@@ -34,6 +34,8 @@ http://MY_LITA_SERVER/docker-hub/receive
 
 Where `MY_LITA_SERVER` is the name or IP address of your Lita server. Make sure the Lita server is accessible for web requests.
 
+![Screenshot](https://raw.githubusercontent.com/datacite/lita-docker-hub/master/screenshot.png)
+
 ## License
 
 [MIT](LICENSE.md)
