@@ -9,13 +9,13 @@ module Lita
         response.headers["Content-Type"] = "application/json"
 
         body = parse(request.body.read)
-        repo_name = body.fetch("repository", {}).fetch("repo_name", nil)
-        repo_url = body.fetch("repository", {}).fetch("repo_url", nil)
-        tag = body.fetch("push_data", {}).fetch("tag", nil)
+        repo_name = body.fetch("repository", {}).fetch("repo_name", "")
+        repo_url = body.fetch("repository", {}).fetch("repo_url", "")
+        tag = body.fetch("push_data", {}).fetch("tag", "")
         # pusher = body.fetch("push_data", {}).fetch("pusher", nil)
         # pushed_at = body.fetch("push_data", {}).fetch("pushed_at", nil)
 
-        if repo_name.present? && repo_url.present? && tag.present?
+        if !repo_name.empty? && !repo_url.empty? && !tag.empty?
           # build_time = time_interval(Time.at(pushed_at), Time.now)
 
           target = find_room_by_name(config.room)
